@@ -1,0 +1,156 @@
+<!doctype html><html lang="uz"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Raqamni Top</title>
+<meta name="theme-color" content="#0B1220">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#0B1220; --panel:#131C2E; --key:#1C2942; --line:#26344F;
+  --fg:#F1F5F9; --muted:#94A3B8; --teal:#14B8A6; --amber:#F59E0B; --pink:#F472B6; --red:#F87171; --green:#4ADE80;
+  --display:'Manrope',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--display);margin:0;-webkit-tap-highlight-color:transparent;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.app{max-width:440px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding-block:14px 24px;gap:14px}
+header{display:flex;align-items:center;gap:12px}
+header svg{width:46px;height:46px;flex:none}
+.brand b{display:block;font-size:22px;font-weight:800;letter-spacing:-.3px}
+.brand small{color:var(--muted);font-size:12.5px}
+button{font:inherit;color:inherit;border:0;cursor:pointer;touch-action:manipulation}
+button:focus-visible,input:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:16px}
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lv{background:var(--key);border-radius:14px;padding:10px 6px;text-align:center}
+.lv b{display:block;font-size:15px}.lv small{color:var(--muted);font-size:11.5px}
+.lv[aria-pressed="true"]{background:var(--teal);color:#062A26}.lv[aria-pressed="true"] small{color:#0B3B35}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.stats div{background:var(--key);border-radius:14px;padding:10px 4px}
+.stats b{display:block;font-family:var(--mono);font-size:22px;font-variant-numeric:tabular-nums}
+.stats small{color:var(--muted);font-size:11.5px}
+.msg{font-size:20px;font-weight:800;text-align:center;min-height:56px;display:flex;align-items:center;justify-content:center;gap:8px;padding:6px}
+.msg.up{color:var(--amber)}.msg.down{color:var(--pink)}.msg.win{color:var(--green)}.msg.lose{color:var(--red)}
+.range{position:relative;height:14px;background:var(--key);border-radius:8px;overflow:hidden}
+.range i{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,var(--teal),var(--amber));border-radius:8px;transition:left .3s,width .3s}
+.rlab{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:6px}
+.lives{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.lives span{width:14px;height:14px;border-radius:50%;background:var(--teal)}
+.lives span.off{background:var(--key)}
+.guess{display:flex;gap:10px}
+.guess input{flex:1;min-width:0;background:var(--key);border:1px solid var(--line);border-radius:16px;color:var(--fg);font-family:var(--mono);font-size:26px;font-weight:700;text-align:center;padding:12px}
+.btn{background:var(--teal);color:#062A26;border-radius:16px;padding:0 22px;font-weight:800;font-size:17px}
+.btn.wide{width:100%;padding:16px;background:var(--amber);color:#2B1A00}
+.tries{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:30px}
+.tries span{font-family:var(--mono);font-size:14px;padding:4px 10px;border-radius:20px;background:var(--key)}
+.tries .u{color:var(--amber)}.tries .d{color:var(--pink)}.tries .w{background:var(--green);color:#052E16}
+.hint{color:var(--muted);font-size:13px;text-align:center}
+[hidden]{display:none!important}
+@keyframes pop{0%{transform:scale(.8);opacity:.3}100%{transform:scale(1);opacity:1}}
+.pop{animation:pop .25s ease-out}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.shake{animation:shake .25s}
+@media (prefers-reduced-motion:reduce){.pop,.shake{animation:none}.range i{transition:none}}
+</style>
+</head><body>
+<div class="app">
+  <header>
+    <svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F59E0B"/><stop offset="1" stop-color="#EA580C"/></linearGradient></defs>
+      <rect width="64" height="64" rx="18" fill="url(#lg)"/><circle cx="32" cy="32" r="18" fill="none" stroke="#0B1220" stroke-width="4"/><circle cx="32" cy="32" r="10" fill="none" stroke="#0B1220" stroke-width="4"/>
+      <circle cx="32" cy="32" r="3.5" fill="#0B1220"/><text x="32" y="12" text-anchor="middle" font-family="Arial" font-weight="900" font-size="9" fill="#0B1220">?</text></svg>
+    <div class="brand"><b>Raqamni<span style="color:var(--amber)"> Top</span></b><small>Mini o'yin · 1 dan 500 gacha</small></div>
+  </header>
+  <section id="game">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="levels">
+        <button class="lv" data-lv="0" aria-pressed="false"><b>Oson</b><small>1–50 · 10 ta</small></button>
+        <button class="lv" data-lv="1" aria-pressed="true"><b>O'rta</b><small>1–100 · 7 ta</small></button>
+        <button class="lv" data-lv="2" aria-pressed="false"><b>Qiyin</b><small>1–500 · 9 ta</small></button>
+      </div>
+      <div class="stats">
+        <div><b id="sBall">0</b><small>Jami ball</small></div>
+        <div><b id="sWin">0</b><small>G'alaba</small></div>
+        <div><b id="sBest">—</b><small>Rekord</small></div>
+      </div>
+      <div class="card">
+        <div class="msg" id="msg">Men son o'yladim. Topa olasizmi?</div>
+        <div class="range"><i id="bar"></i></div>
+        <div class="rlab"><span id="lo">1</span><span>javob shu oraliqda</span><span id="hi">100</span></div>
+        <div class="lives" id="lives"></div>
+      </div>
+      <div class="guess" id="form">
+        <input id="inp" type="text" inputmode="numeric" autocomplete="off" enterkeyhint="go" maxlength="3" placeholder="?">
+        <button class="btn" type="button" id="check">Tekshir</button>
+      </div>
+      <button class="btn wide" id="again" hidden>Yana o'ynash</button>
+      <div class="tries" id="tries"></div>
+      <p class="hint">Maslahat: har doim oraliqning o'rtasini ayting.</p>
+    </div>
+  </section>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+const LEVELS = [{ max: 50, tries: 10 }, { max: 100, tries: 7 }, { max: 500, tries: 9 }];
+let lv = store.get('lv', 1), secret, used, lo, hi, over;
+let stats = store.get('stats', { ball: 0, win: 0, best: null });
+function drawStats() { $('sBall').textContent = stats.ball; $('sWin').textContent = stats.win; $('sBest').textContent = stats.best ? stats.best + ' ta' : '—'; }
+function setMsg(t, cls) { const m = $('msg'); m.textContent = t; m.className = 'msg ' + (cls || ''); m.classList.remove('pop'); void m.offsetWidth; m.classList.add('pop'); }
+function drawRange() {
+  const L = LEVELS[lv];
+  $('lo').textContent = lo; $('hi').textContent = hi;
+  $('bar').style.left = ((lo - 1) / L.max * 100) + '%';
+  $('bar').style.width = ((hi - lo + 1) / L.max * 100) + '%';
+  $('lives').innerHTML = '';
+  for (let k = 0; k < L.tries; k++) { const s = document.createElement('span'); if (k < used) s.className = 'off'; $('lives').appendChild(s); }
+  $('inp').placeholder = lo + '–' + hi;
+}
+function newGame() {
+  const L = LEVELS[lv];
+  secret = 1 + Math.floor(Math.random() * L.max);
+  used = 0; lo = 1; hi = L.max; over = false;
+  $('tries').innerHTML = ''; $('again').hidden = true; $('form').hidden = false;
+  $('inp').value = '';
+  setMsg('1 dan ' + L.max + ' gacha son o\'yladim. ' + L.tries + ' ta urinish!', '');
+  document.querySelectorAll('.lv').forEach(b => b.setAttribute('aria-pressed', +b.dataset.lv === lv));
+  drawRange();
+}
+function chip(n, cls, arrow) { const s = document.createElement('span'); s.className = cls; s.textContent = n + ' ' + arrow; $('tries').appendChild(s); }
+function check() {
+  if (over) return;
+  const L = LEVELS[lv];
+  const g = parseInt($('inp').value, 10);
+  if (isNaN(g) || g < 1 || g > L.max) {
+    setMsg('1 dan ' + L.max + ' gacha butun son kiriting', 'down');
+    $('inp').classList.remove('shake'); void $('inp').offsetWidth; $('inp').classList.add('shake');
+    return;
+  }
+  used++;
+  $('inp').value = '';
+  if (g === secret) {
+    const ball = (L.tries - used + 1) * 10 * (lv + 1);
+    stats.ball += ball; stats.win++;
+    if (!stats.best || used < stats.best) stats.best = used;
+    store.set('stats', stats); drawStats();
+    chip(g, 'w', '✓'); lo = hi = g; drawRange();
+    setMsg('🏆 Topdingiz! ' + used + ' urinishda. +' + ball + ' ball', 'win');
+    return finish();
+  }
+  if (g < secret) { lo = Math.max(lo, g + 1); chip(g, 'u', '↑'); setMsg('Kattaroq son ayting ↑', 'up'); }
+  else { hi = Math.min(hi, g - 1); chip(g, 'd', '↓'); setMsg('Kichikroq son ayting ↓', 'down'); }
+  drawRange();
+  if (used >= L.tries) { setMsg('Urinishlar tugadi. Javob: ' + secret, 'lose'); finish(); }
+  else $('inp').focus();
+}
+function finish() { over = true; $('form').hidden = true; $('again').hidden = false; }
+$('check').addEventListener('click', check);
+$('inp').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); check(); } });
+$('inp').addEventListener('input', () => { $('inp').value = $('inp').value.replace(/\D/g, ''); });
+$('again').addEventListener('click', newGame);
+document.querySelectorAll('.lv').forEach(b => b.addEventListener('click', () => { lv = +b.dataset.lv; store.set('lv', lv); newGame(); }));
+drawStats(); newGame();
+</script>
+</body></html>
